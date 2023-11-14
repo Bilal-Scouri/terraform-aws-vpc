@@ -42,7 +42,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.vpc_name}-gw"
+    Name = "${var.vpc_name}-igw"
   }
 }
 
@@ -136,11 +136,19 @@ resource "aws_eip_association" "eip-public-association" {
 
 resource "aws_route_table" "rt-public" {
   vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "${var.vpc_name}-public"
+  }
 }
 
 resource "aws_route_table" "rt-private" {
   for_each = var.azs
   vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "${var.vpc_name}-private-${var.aws_region}${each.key}"
+  }
 }
 
 resource "aws_route" "r-public" {
